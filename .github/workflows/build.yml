@@ -24,7 +24,7 @@ env:
   DOCKER_BUILDKIT: 1
 
 permissions:
-  contents: read
+  contents: write
   packages: write
 
 jobs:
@@ -305,7 +305,7 @@ jobs:
           path: artifacts/*
   publish_release:
     name: Publish release
-    if: ${{ !cancelled() && ( github.event_name == 'schedule' || github.event.inputs.doRelease == 'true' ) && needs.build_ffmpeg.result == 'success' }}
+    if: ${{ !cancelled() && needs.build_ffmpeg.result == 'success' && ( github.event_name == 'schedule' || github.event.inputs.doRelease == 'true' || ( github.event_name == 'push' && github.ref == 'refs/heads/master' ) ) }}
     needs: build_ffmpeg
     runs-on: ubuntu-latest
     steps:
